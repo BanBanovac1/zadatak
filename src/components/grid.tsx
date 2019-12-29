@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-
+import * as React from 'react';
+import { useState, useEffect } from 'react';
 const FIELD_SIZE_SMALL = '20px';
 const FIELD_SIZE_MEDIUM = '35px';
 const FIELD_SIZE_LARGE = '50px';
@@ -76,7 +76,7 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
             return ranArray.map((num, fieldId) => {
                 return (<div
                     key={fieldId}
-                    className={clickedFields.indexOf(fieldId) !== -1 ? 'field--clicked' : 'field'}
+                    className={clickedFields.indexOf(fieldId) !== -1 ? 'field__clicked' : 'field'}
                     onClick={() => toggleFlip(fieldId)}>
                     <div className='field__inner'>
                         <div className='field__back'>{num}</div>

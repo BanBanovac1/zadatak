@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Grid from './components/grid';
 import EditBox from './components/editBox';
-import style from './App.less';
+import style from 'style/app.less';
 
 const DEFAULT_ROWS = 5;
 const DEFAULT_COLUMNS = 5;

@@ -1,4 +1,4 @@
-import React from "react"
+import * as React from 'react';
 
 interface Props {
     handleInput: (e: any) => void;
@@ -7,7 +7,7 @@ interface Props {
 
 const EditBox: React.FC<Props> = ({ handleInput, toggleGrid }) => {
     return (
-        <div className="edit-box">
+        <div className="editBox">
             <input type="number" name="rows" placeholder="Enter number of rows" min="1" max="99" defaultValue={5} onChange={handleInput} />
             <input type="number" name="columns" placeholder="Enter number of columns" min="1" max="99" defaultValue={5} onChange={handleInput} />
             <select name='size' onChange={handleInput}>
