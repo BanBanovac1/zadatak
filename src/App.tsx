@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Grid from './components/grid';
 import EditBox from './components/editBox';
 import style from 'style/app.less';
@@ -11,43 +11,61 @@ const App = () => {
   const [rows, setRows] = useState<number>(DEFAULT_ROWS);
   const [columns, setColumns] = useState<number>(DEFAULT_COLUMNS);
   const [size, setSize] = useState<string>('small');
-  const [showGrid, setGrid] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
-  const handleInput = (e: any) => {
-    const { name, value } = e.target;
-    setGrid(false);
-
-    switch (name) {
-      case 'rows':
-        setRows(parseInt(value));
-        break;
-      case 'columns':
-        setColumns(parseInt(value));
-        break;
-      case 'size':
-        setSize(value);
-        break;
-    }
-  }
+  const rowRef = useRef(null);
+  const columnRef = useRef(null);
+  const sizeRef = useRef(null);
 
   const toggleGrid = () => {
-    const fieldCount = rows * columns;
-
-    if (fieldCount > MAX_FIELD_COUNT) {
-      setGrid(false);
-      setErrorMsg('Number of fields exceeds 99!');
+    console.log(typeof rowRef.current.value);
+    setErrorMsg('');
+    if (!inputValid()) {
       return;
     }
 
-    setGrid(true);
+    setRows(parseInt(rowRef.current.value));
+    setColumns(parseInt(columnRef.current.value));
+    setSize(sizeRef.current.value);
+  }
+
+  const inputValid = (): boolean => {
+    const rowVal = rowRef.current.value;
+    const columnVal = columnRef.current.value;
+
+    if (rowVal === '') {
+      setErrorMsg('Enter number of rows');
+      return false;
+    }
+    if (columnVal === '') {
+      setErrorMsg('Enter number of columns!');
+      return false;
+    }
+    if (parseInt(rowVal) === 0) {
+      setErrorMsg('Number of rows cannot be 0!');
+      return false;
+    }
+    if (parseInt(columnVal) === 0) {
+      setErrorMsg('Number of columns cannot be 0!');
+      return false;
+    }
+    if (parseInt(rowVal) * parseInt(columnVal) >= MAX_FIELD_COUNT) {
+      setErrorMsg('Number of fields cannot be over 99!');
+      return false;
+    }
+
+    return true;
   }
 
   return (
     <div className={style.App}>
-      {showGrid ? <Grid row={rows} column={columns} size={size} /> :
+      {errorMsg === '' ? <Grid row={rows} column={columns} size={size} /> :
         <div className={style.errorMsg}>{errorMsg}</div>}
-      <EditBox handleInput={handleInput} toggleGrid={toggleGrid} />
+      <EditBox
+        forwardRefRow={rowRef}
+        forwardRefColumn={columnRef}
+        forwardRefSize={sizeRef}
+        toggleGrid={toggleGrid} />
     </div >
   );
 

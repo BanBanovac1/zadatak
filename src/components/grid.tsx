@@ -18,8 +18,11 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
     const [showFields, setFields] = useState<boolean>(false);
 
     const generateRanArray = () => {
+        console.log("generateRanArray()...");
         let i = 0;
         let ranArray = [];
+
+        console.log("fieldCount: ", fieldCount);
 
         while (ranArray.length < fieldCount) {
             ranArray.push(++i);
@@ -102,11 +105,23 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
         }
     }
 
-    useEffect(() => { parseSize(); generateRanArray(); }, [fieldCount, size]);
+
+    useEffect(() => {
+        setFieldCount(row * column);
+    }, [row, column]);
+
+    useEffect(() => {
+        parseSize();
+    }, [size]);
+
+    useEffect(() => {
+        generateRanArray();
+        console.log(fieldCount, size, fieldSize);
+    }, [fieldCount]);
 
     return (
         <div className="grid" style={{ gridTemplateColumns: `repeat(${column}, ${fieldSize})`, gridTemplateRows: `repeat(${row}, ${fieldSize})` }}>
-            {showFields ? renderFields() : null}
+            {showFields ? renderFields() : ''}
         </div>
     );
 }
