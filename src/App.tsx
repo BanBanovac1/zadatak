@@ -1,11 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Grid from './components/grid';
 import EditBox from './components/editBox';
-import style from 'style/app.less';
-
-const DEFAULT_ROWS = 5;
-const DEFAULT_COLUMNS = 5;
-const MAX_FIELD_COUNT = 99;
+import { MAX_FIELD_COUNT, DEFAULT_ROWS, DEFAULT_COLUMNS } from 'constants/index';
+import 'style/app.less';
 
 const App = () => {
   const [rows, setRows] = useState<number>(DEFAULT_ROWS);
@@ -18,8 +15,6 @@ const App = () => {
   const sizeRef = useRef(null);
 
   const toggleGrid = () => {
-    console.log(typeof rowRef.current.value);
-    setErrorMsg('');
     if (!inputValid()) {
       return;
     }
@@ -33,8 +28,10 @@ const App = () => {
     const rowVal = rowRef.current.value;
     const columnVal = columnRef.current.value;
 
+    setErrorMsg('');
+
     if (rowVal === '') {
-      setErrorMsg('Enter number of rows');
+      setErrorMsg('Enter number of rows!');
       return false;
     }
     if (columnVal === '') {
@@ -50,7 +47,7 @@ const App = () => {
       return false;
     }
     if (parseInt(rowVal) * parseInt(columnVal) >= MAX_FIELD_COUNT) {
-      setErrorMsg('Number of fields cannot be over 99!');
+      setErrorMsg('Number of fields cannot exceed 99!');
       return false;
     }
 
@@ -58,13 +55,14 @@ const App = () => {
   }
 
   return (
-    <div className={style.App}>
-      {errorMsg === '' ? <Grid row={rows} column={columns} size={size} /> :
-        <div className={style.errorMsg}>{errorMsg}</div>}
+    <div className='App'>
+      <div className='header'>GRID GENERATOR</div>
+      <Grid row={rows} column={columns} size={size} />
+      {errorMsg !== '' ? <div className='errorMsg'>{errorMsg}</div> : null}
       <EditBox
-        forwardRefRow={rowRef}
-        forwardRefColumn={columnRef}
-        forwardRefSize={sizeRef}
+        fwdRefRow={rowRef}
+        fwdRefColumn={columnRef}
+        fwdRefSize={sizeRef}
         toggleGrid={toggleGrid} />
     </div >
   );

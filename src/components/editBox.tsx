@@ -1,37 +1,36 @@
 import React from 'react';
 
 interface Props {
-    forwardRefRow: React.Ref<HTMLInputElement>;
-    forwardRefColumn: React.Ref<HTMLInputElement>;
-    forwardRefSize: React.Ref<HTMLSelectElement>;
+    fwdRefRow: React.Ref<HTMLInputElement>;
+    fwdRefColumn: React.Ref<HTMLInputElement>;
+    fwdRefSize: React.Ref<HTMLSelectElement>;
     toggleGrid: (e: any) => void;
 };
 
-const EditBox: React.FC<Props> = ({ forwardRefRow,
-    forwardRefColumn,
-    forwardRefSize,
+const EditBox: React.FC<Props> = ({ fwdRefRow,
+    fwdRefColumn,
+    fwdRefSize,
     toggleGrid }) => {
     return (
         <div className="editBox">
+            <label>Rows:</label>
             <input
-                ref={forwardRefRow}
+                ref={fwdRefRow}
                 type="number"
                 name="rows"
                 placeholder="Enter number of rows"
-                min="1"
-                max="99"
                 defaultValue={5}
             />
+            <label>Column:</label>
             <input
-                ref={forwardRefColumn}
+                ref={fwdRefColumn}
                 type="number"
                 name="columns"
                 placeholder="Enter number of columns"
-                min="1"
-                max="99"
                 defaultValue={5}
             />
-            <select ref={forwardRefSize} name='size' >
+            <label>Field size:</label>
+            <select ref={fwdRefSize} name='size' >
                 <option value="small">small</option>
                 <option value="medium">medium</option>
                 <option value="large">large</option>

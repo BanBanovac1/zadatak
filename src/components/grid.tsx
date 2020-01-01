@@ -1,8 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { useState, useEffect } from 'react';
-const FIELD_SIZE_SMALL = '20px';
-const FIELD_SIZE_MEDIUM = '35px';
-const FIELD_SIZE_LARGE = '50px';
+import { FIELD_SIZE_SMALL, FIELD_SIZE_MEDIUM, FIELD_SIZE_LARGE } from 'constants/index';
 
 interface Props {
     row: number;
@@ -24,12 +22,9 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
 
         console.log("fieldCount: ", fieldCount);
 
-        while (ranArray.length < fieldCount) {
-            ranArray.push(++i);
-        }
+        ranArray = Array.from({ length: fieldCount }, (_v, k) => k + 1);
 
         shuffle(ranArray);
-
         setRanArray(ranArray);
         setFields(true);
     }
@@ -74,6 +69,10 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
         setClickedFields([...clickedFields, fieldId]);
     }
 
+    const resetFields = () => {
+        setClickedFields([]);
+    }
+
     const renderFields = () => {
         for (let i = 0; i < ranArray.length; i++) {
             return ranArray.map((num, fieldId) => {
@@ -105,6 +104,9 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
         }
     }
 
+    useEffect(() => {
+        resetFields();
+    }, [row, column, size]);
 
     useEffect(() => {
         setFieldCount(row * column);
