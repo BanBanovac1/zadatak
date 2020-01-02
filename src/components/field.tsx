@@ -9,7 +9,6 @@ interface Props {
 
 const Field: React.FC<Props> = ({ fieldId, clName, num, toggleFlip }) => {
     return (<div
-        key={fieldId}
         className={clName}
         onClick={() => toggleFlip(fieldId)}>
         <div className='field__inner'>
