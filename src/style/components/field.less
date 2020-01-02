@@ -1,0 +1,44 @@
+.field {
+    outline: 1px solid black;
+    perspective: 1000px;
+    cursor: pointer;
+
+    .field__inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+        cursor: pointer;
+
+        .field__front,
+        .field__back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+
+        .field__front {
+            background-color: @field-front-color;
+        }
+
+        .field__back {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: @field-back-color;
+            font-weight: bold;
+            color: @field-font-color;
+            transform: rotateY(180deg);
+        }
+    }
+}
+
+.field--clicked:extend(.field all) {
+    .field__inner {
+        transform: rotateY(180deg);
+    }
+}

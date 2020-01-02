@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { FIELD_SIZE_SMALL, FIELD_SIZE_MEDIUM, FIELD_SIZE_LARGE } from 'constants/index';
+import Field from './field';
+import * as constants from 'constants/constants';
 
 interface Props {
     row: number;
@@ -13,41 +14,58 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
     const [clickedFields, setClickedFields] = useState<number[]>([]);
     const [fieldCount, setFieldCount] = useState<number>(row * column);
     const [fieldSize, setFieldSize] = useState<string | null>(null);
-    const [showFields, setFields] = useState<boolean>(false);
 
+    /**
+     * Generates array of numbers from 1 to fieldCount and sets it as a state after
+     * shuffling which will be used to fill grid fields with values from it. It should only
+     * be called after fieldCount state is changed.
+     */
     const generateRanArray = () => {
-        console.log("generateRanArray()...");
-        let i = 0;
         let ranArray = [];
-
-        console.log("fieldCount: ", fieldCount);
 
         ranArray = Array.from({ length: fieldCount }, (_v, k) => k + 1);
 
         shuffle(ranArray);
         setRanArray(ranArray);
-        setFields(true);
     }
 
-    const isAscending = (ranArray: number[]) => {
-        console.log("isAscending pozvan!!!!!!!!!!!!!!!!!");
-        console.log("ranArray u isAscending:");
-        console.log(ranArray);
+    /**
+     * Checks that array is in ascending order.
+     * 
+     * @param ranArray - array of numbers
+     * @returns true - array is in ascending order
+     * @returns false - array is not in ascending order
+     */
+    const isAscending = (ranArray: number[]): boolean => {
         return ranArray.every((x, i) => {
             return i === 0 || x >= ranArray[i - 1];
         });
     }
 
-    const isDescending = (ranArray: number[]) => {
-        console.log("isDescending pozvan!!!!!!!!!!!!!!!!!");
-        console.log("ranArray u isDescending:");
-        console.log(ranArray);
-
+    /**
+     * Checks that array is in descending order.
+     * 
+     * @param ranArray - array of numbers
+     * @returns true - array is in descending order
+     * @returns false - array is not in descending order
+     */
+    const isDescending = (ranArray: number[]): boolean => {
         return ranArray.every((x, i) => {
             return i === 0 || x <= ranArray[i - 1];
         });
     }
-    /*https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array*/
+
+    /**
+     * Randomizes ordering of numbers inside given array and then
+     * checks if array is in ascending or descending order. If any
+     * of these conditions is true, this function will recursively
+     * call itself until both conditions are false.
+     * NOTE - it is sufficient to shuffle array of two numbers only 
+     * once, since that array will always be in ascending or descending
+     * order.
+     * 
+     * @param ranArray - array of numbers
+     */
     const shuffle = (ranArray: number[]) => {
         for (let i = ranArray.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -61,6 +79,13 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
         shuffle(ranArray);
     }
 
+    /**
+     * Flips field with matching fieldId. If field already
+     * shows number, flip it to the front side, otherwise flip it
+     * to the back side.
+     * 
+     * @param fieldId - field index
+     */
     const toggleFlip = (fieldId: number) => {
         if (clickedFields.indexOf(fieldId) !== -1) {
             setClickedFields(clickedFields.filter(item => item !== fieldId));
@@ -69,46 +94,48 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
         setClickedFields([...clickedFields, fieldId]);
     }
 
+    /**
+     * Reset all fields to show front side (without number).
+     */
     const resetFields = () => {
         setClickedFields([]);
     }
 
+
+    /**
+     * Render fields with numbers from ranArray.
+     * 
+     * @returns <Field/> - field component
+     */
     const renderFields = () => {
-        for (let i = 0; i < ranArray.length; i++) {
-            return ranArray.map((num, fieldId) => {
-                return (<div
-                    key={fieldId}
-                    className={clickedFields.indexOf(fieldId) !== -1 ? 'field__clicked' : 'field'}
-                    onClick={() => toggleFlip(fieldId)}>
-                    <div className='field__inner'>
-                        <div className='field__back'>{num}</div>
-                        <div className='field__front' />
-                    </div>
-                </div>);
-            });
-        }
+        return ranArray.map((num, fieldId) => {
+            return (<Field
+                fieldId={fieldId}
+                clName={clickedFields.indexOf(fieldId) !== -1 ? 'field--clicked' : 'field'}
+                num={num}
+                toggleFlip={toggleFlip} />)
+        });
     }
 
+    /**
+     * Parses size prop and sets field size.
+     */
     const parseSize = () => {
-        console.log("u parse size: " + size);
         switch (size) {
             case 'small':
-                setFieldSize(FIELD_SIZE_SMALL)
+                setFieldSize(constants.FIELD_SIZE_SMALL)
                 break;
             case 'medium':
-                setFieldSize(FIELD_SIZE_MEDIUM);
+                setFieldSize(constants.FIELD_SIZE_MEDIUM);
                 break;
             case 'large':
-                setFieldSize(FIELD_SIZE_LARGE);
+                setFieldSize(constants.FIELD_SIZE_LARGE);
                 break;
         }
     }
 
     useEffect(() => {
         resetFields();
-    }, [row, column, size]);
-
-    useEffect(() => {
         setFieldCount(row * column);
     }, [row, column]);
 
@@ -118,12 +145,15 @@ const Grid: React.FC<Props> = ({ row, column, size }) => {
 
     useEffect(() => {
         generateRanArray();
-        console.log(fieldCount, size, fieldSize);
     }, [fieldCount]);
 
     return (
-        <div className="grid" style={{ gridTemplateColumns: `repeat(${column}, ${fieldSize})`, gridTemplateRows: `repeat(${row}, ${fieldSize})` }}>
-            {showFields ? renderFields() : ''}
+        <div className='grid' style={{
+            ['--row-count' as any]: row,
+            ['--column-count' as any]: column,
+            ['--field-size' as any]: fieldSize
+        }}>
+            {renderFields()}
         </div>
     );
 }

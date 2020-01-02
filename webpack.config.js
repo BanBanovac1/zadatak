@@ -1,8 +1,8 @@
 const path = require('path');
-const HtmlWebPackPlugin = require("html-webpack-plugin");
+const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    devtool: "source-map",
+    devtool: 'source-map',
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.css', '.less'],
         alias: {
@@ -21,36 +21,36 @@ module.exports = {
                 test: /\.ts(x?)$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: "ts-loader"
+                    loader: 'ts-loader'
                 }
             },
             {
                 test: /\.(c|le)ss$/,
                 use: [
-                    "style-loader",
-                    "css-loader",
-                    "less-loader"
+                    'style-loader',
+                    'css-loader',
+                    'less-loader'
                 ]
             },
             {
                 test: /\.html$/,
                 use: [
                     {
-                        loader: "html-loader"
+                        loader: 'html-loader'
                     }
                 ]
             },
             {
-                enforce: "pre",
+                enforce: 'pre',
                 test: /\.js$/,
-                loader: "source-map-loader"
+                loader: 'source-map-loader'
             }
         ]
     },
     plugins: [
         new HtmlWebPackPlugin({
-            template: "./src/index.html",
-            filename: "./index.html"
+            template: './src/index.html',
+            filename: './index.html'
         })
     ],
     devServer: {

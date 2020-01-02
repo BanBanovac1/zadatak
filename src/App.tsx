@@ -1,19 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Grid from './components/grid';
 import EditBox from './components/editBox';
-import { MAX_FIELD_COUNT, DEFAULT_ROWS, DEFAULT_COLUMNS } from 'constants/index';
-import 'style/app.less';
+import * as constants from 'constants/constants';
+import * as errors from 'constants/errors';
+import 'style/main.less';
 
-const App = () => {
-  const [rows, setRows] = useState<number>(DEFAULT_ROWS);
-  const [columns, setColumns] = useState<number>(DEFAULT_COLUMNS);
-  const [size, setSize] = useState<string>('small');
+const App: React.FC<{}> = () => {
+  const [rows, setRows] = useState<number>(constants.DEFAULT_ROWS);
+  const [columns, setColumns] = useState<number>(constants.DEFAULT_COLUMNS);
+  const [size, setSize] = useState<string>('medium');
   const [errorMsg, setErrorMsg] = useState<string>('');
 
   const rowRef = useRef(null);
   const columnRef = useRef(null);
   const sizeRef = useRef(null);
 
+  /**
+   * Generates grid with new parameters.
+   */
   const toggleGrid = () => {
     if (!inputValid()) {
       return;
@@ -24,6 +28,12 @@ const App = () => {
     setSize(sizeRef.current.value);
   }
 
+  /**
+   * Checks validity of grid parameters.
+   * 
+   * @returns true - all parameters are valid
+   * @returns false - some or all parameters are not valid
+   */
   const inputValid = (): boolean => {
     const rowVal = rowRef.current.value;
     const columnVal = columnRef.current.value;
@@ -31,23 +41,23 @@ const App = () => {
     setErrorMsg('');
 
     if (rowVal === '') {
-      setErrorMsg('Enter number of rows!');
+      setErrorMsg(errors.ERROR_ROW_EMPTY);
       return false;
     }
     if (columnVal === '') {
-      setErrorMsg('Enter number of columns!');
+      setErrorMsg(errors.ERROR_COLUMN_EMPTY);
       return false;
     }
     if (parseInt(rowVal) === 0) {
-      setErrorMsg('Number of rows cannot be 0!');
+      setErrorMsg(errors.ERROR_ROW_NIL);
       return false;
     }
     if (parseInt(columnVal) === 0) {
-      setErrorMsg('Number of columns cannot be 0!');
+      setErrorMsg(errors.ERROR_COLUMN_NIL);
       return false;
     }
-    if (parseInt(rowVal) * parseInt(columnVal) >= MAX_FIELD_COUNT) {
-      setErrorMsg('Number of fields cannot exceed 99!');
+    if (parseInt(rowVal) * parseInt(columnVal) > constants.MAX_FIELD_COUNT) {
+      setErrorMsg(errors.ERROR_MAX_FIELDS_EXCEEDED);
       return false;
     }
 
